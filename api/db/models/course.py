@@ -54,5 +54,29 @@ class ContentBlock(Timestamp, Base):
     section = relationship("Section", back_populates="content_blocks")
 
 
+class StudentCourse(Timestamp, Base):
+    __tablename__ = "student_courses"
 
-class StudentCourse(Base):
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    completed = Column(Boolean, default=False)
+
+    student = relationship(User, back_populates="student_courses")
+    course = relationship("Course", back_populates="student_courses")
+
+
+class CompletedContentBlock(Timestamp, Base):
+    __tablename__ = "completed_content_blocks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    content_block_id = Column(Integer, ForeignKey(
+        "content_blocks.id"), nullable=False)
+    url = Column(URLType, nullable=True)
+    feedback = Column(Text, nullable=True)
+    grade = Column(Integer, default=0)
+
+    student = relationship(User, back_populates="student_content_blocks")
+    content_block = relationship(
+        ContentBlock, back_populates="completed_content_blocks")
